@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>金石台</title>
+    <link>/</link>
+    <description>金石台</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <managingEditor>shawnfinelee@163.com (Jin Shi Tai)</managingEditor>
+    <webMaster>shawnfinelee@163.com (Jin Shi Tai)</webMaster>
+    <lastBuildDate>Thu, 13 Jun 2024 06:00:00 +0800</lastBuildDate>
+    
+    <atom:link href="/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>关于</title>
+      <link>/about/</link>
+      <pubDate>Thu, 13 Jun 2024 06:00:00 +0800</pubDate>
+      <author>shawnfinelee@163.com (Jin Shi Tai)</author>
+      <guid>/about/</guid>
+      <description>&lt;h2 id=&#34;关于博客&#34; &gt;
+&lt;div&gt;
+    &lt;a href=&#34;#%e5%85%b3%e4%ba%8e%e5%8d%9a%e5%ae%a2&#34;&gt;
+        #
+    &lt;/a&gt;
+    关于博客
+&lt;/div&gt;
+&lt;/h2&gt;
+&lt;p&gt;我希望通过共享知识能够和更多的人交流，大多数时候，这个站点主要是以分享一些见闻，知识，技术，心得，趣闻，等等，反正是个大杂烩，对于文章的内容，质量，风格基本上没有什么要求，主要是在一种轻松的氛围下享受编程和技术其中的点点滴滴就可以了。（来自酷壳）&lt;/p&gt;
+&lt;h2 id=&#34;联系方式&#34; &gt;
+&lt;div&gt;
+    &lt;a href=&#34;#%e8%81%94%e7%b3%bb%e6%96%b9%e5%bc%8f&#34;&gt;
+        #
+    &lt;/a&gt;
+    联系方式
+&lt;/div&gt;
+&lt;/h2&gt;
+&lt;p&gt;邮箱：shawnfinelee@163.com&lt;/p&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>
