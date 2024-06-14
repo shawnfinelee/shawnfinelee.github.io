@@ -1,0 +1,2 @@
+baseURL = 'https://shawnfinelee.github.io/'
+publishDir = "docs"

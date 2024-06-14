@@ -4,7 +4,7 @@ defaultContentLanguage = "en"
 theme = 'anubis2'
 title = '金石台'
 
-publishDir = "docs"
+publishDir = "public"
 
 # buildFuture = true
 timezone = "Asia/Shanghai"
