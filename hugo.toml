@@ -4,6 +4,8 @@ defaultContentLanguage = "en"
 theme = 'anubis2'
 title = '金石台'
 
+publishDir = "docs"
+
 # buildFuture = true
 timezone = "Asia/Shanghai"
 # rssIcon = false # true | false; Showing RSS icon; default: true
