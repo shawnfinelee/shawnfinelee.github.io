@@ -1,3 +1,3 @@
-[submodule "themes/anubis2"]
-	path = themes/anubis2
+[submodule "themes/jinshitai"]
+	path = themes/jinshitai
 	url = https://github.com/shawnfinelee/hugo-theme-anubis2

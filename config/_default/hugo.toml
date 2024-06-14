@@ -1,7 +1,7 @@
 baseURL = 'https://localhost:1313/'
 languageCode = 'en-us'
 defaultContentLanguage = "en"
-theme = 'anubis2'
+theme = 'jinshitai'
 title = '金石台'
 
 publishDir = "public"
@@ -27,9 +27,14 @@ weight = 1
 # weight = 2
 
 [[menu.main]]
+name = "杂技"
+url = "/tricks/"
+weight = 3
+
+[[menu.main]]
 name = "About"
 url = "/about/"
-weight = 3
+weight = 4
 
 # [languages]
 # [languages.zh]
@@ -49,13 +54,16 @@ colorThemeSwitcher = true # true | false; Showing color theme switcher in top of
 toc = true # true | false; Showing table of contents in the post; default: true
 # math = false # true | false; Enable MathJax; default: false; You can enable MathJax in the post by adding math: true in a post's metadata section.
 
+rssIcon = false
+
 # check more social icons at https://github.com/Junyi-99/hugo-theme-anubis2/wiki/Social-Icons
 social = [
-    { id="github", name="shawnfinelee", url = "https://github.com/shawnfinelee/shawnfinelee.github.io" },
+    { id="github", name="shawnfinelee" },
     # { id="linkedin", url="https://www.linkedin.com/in/junyi-99/" },
-    # { id="email", name="shawnfinelee@163.com" },
-    { id = "leetcode", url = "https://leetcode.cn/u/shawnflee/"},
+    { id="email", name="shawnfinelee@163.com" },
+    { id = "leetcode", name = "shawnflee"},
 ]
+socialIconsRight = true
 
 # icp = "京ICP备xxxxx号-1"
 
