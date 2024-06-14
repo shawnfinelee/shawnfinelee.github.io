@@ -50,11 +50,12 @@ toc = true # true | false; Showing table of contents in the post; default: true
 # math = false # true | false; Enable MathJax; default: false; You can enable MathJax in the post by adding math: true in a post's metadata section.
 
 # check more social icons at https://github.com/Junyi-99/hugo-theme-anubis2/wiki/Social-Icons
-# social = [
-    # { id="github", name="Junyi-99" },
+social = [
+    { id="github", name="shawnfinelee", url = "https://github.com/shawnfinelee/shawnfinelee.github.io" },
     # { id="linkedin", url="https://www.linkedin.com/in/junyi-99/" },
     # { id="email", name="shawnfinelee@163.com" },
-# ]
+    { id = "leetcode", url = "https://leetcode.cn/u/shawnflee/"},
+]
 
 # icp = "京ICP备xxxxx号-1"
 
