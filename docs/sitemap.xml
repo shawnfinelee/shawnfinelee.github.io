@@ -2,10 +2,16 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
-        <loc>https://shawnfinelee.github.io/about/</loc>
-        <lastmod>2024-06-13T06:00:00+08:00</lastmod>
+        <loc>https://shawnfinelee.github.io/tricks/git/</loc>
+        <lastmod>2024-06-14T11:41:50+08:00</lastmod>
+      </url><url>
+        <loc>https://shawnfinelee.github.io/tricks/</loc>
+        <lastmod>2024-06-14T11:41:50+08:00</lastmod>
       </url><url>
         <loc>https://shawnfinelee.github.io/</loc>
+        <lastmod>2024-06-14T11:41:50+08:00</lastmod>
+      </url><url>
+        <loc>https://shawnfinelee.github.io/about/</loc>
         <lastmod>2024-06-13T06:00:00+08:00</lastmod>
       </url><url>
         <loc>https://shawnfinelee.github.io/tags/</loc>
