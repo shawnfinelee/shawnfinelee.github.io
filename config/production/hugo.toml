@@ -1,2 +1,12 @@
 baseURL = 'https://shawnfinelee.github.io/'
 publishDir = "docs"
+
+
+[params]
+GiscusRepo = "shawnfinelee/shawnfinelee.github.io"
+GiscusRepoId = "R_kgDOMJJIQg"
+GiscusCategory = "Announcements"
+GiscusCategoryId = "DIC_kwDOMJJIQs4CgHdl"
+GiscusLazyLoad = true
+GiscusDataMapping = "pathname"
+GiscusLang = "zh-CN"
