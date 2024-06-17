@@ -16,12 +16,17 @@ $ clockwall NewYork=localhost:8010 Tokyo=localhost:8020 London=localhost:8030
 ```
 
 ## 分析
+
 CS结构的网络
+
 服务端接受参数 port, 可以用 golang flag 标准库
+
 定时通过网络io吐出时间
 
 客户端接受参数 [city]:[host] 可以用 golang os.Args处理
+
 一对多建立tcp连接，客户端维护一份大盘数据，预计会遇到并发写问题
+
 客户端定时刷新 => 周期性打印大盘数据
 
 ## 解答
