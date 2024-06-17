@@ -10,3 +10,12 @@ GiscusCategoryId = "DIC_kwDOMJJIQs4CgHdl"
 GiscusLazyLoad = true
 GiscusDataMapping = "pathname"
 GiscusLang = "zh-CN"
+
+
+[params.UmamiAnalytics]
+enabled = true
+dnt = false
+id = "7f48681e-9299-4262-a207-e4e4464482d7"                                            # Website ID
+datacache = true
+url = "https://cloud.umami.is/script.js"
+shareUrl = "https://cloud.umami.is/share/4pgWfJSJsLh7xyu0/8crane.co.in"

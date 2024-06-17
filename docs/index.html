@@ -154,6 +154,11 @@
 
 
 
+    
+
+<script async defer data-website-id="7f48681e-9299-4262-a207-e4e4464482d7" data-cache="true" data-do-not-track="false" src="https://cloud.umami.is/script.js"></script>
+
+
 
 
 
@@ -426,7 +431,7 @@
             <article class="post-list h-feed post-card">
     <div class="post-header">
         <header>
-            <h1 class="p-name post-title"><a class="u-url" href="/gopl/ch8.1-clockwall/">go语言圣经-练习题Ch8.1-Clockwall世界时钟大盘</a></h1>
+            <h1 class="p-name post-title"><a class="u-url" href="/tricks/git/">Git</a></h1>
         </header>
         
 
@@ -434,11 +439,11 @@
 
     
         <div class="content post-summary p-summary">
-            # 题目 修改clock2来支持传入参数作为端口号，然后写一个clockwall的程序，这个程序可以同时与多个clock服务器通信，从多个服务器中读取时间，并且在一个表格中一次显示所有服务器传回的结果，类似于你在某些办公室里看到的时钟墙。如果你有地理学上分布式的服务器可以用的话，让这些服务器跑在不同的机器上面；或者在同一台机器上跑多个不同的实例，这些实例监听不同的端口，假装自己在不同的时区。
-$ TZ=US/Eastern ./clock2 -port 8010 &amp; $ TZ=Asia/Tokyo ./clock2 -port 8020 &amp; $ TZ=Europe/London ./clock2 -port 8030 &amp; $ clockwall NewYork=localhost:8010 Tokyo=localhost:8020 London=localhost:8030 # 分析 CS结构的网络 服务端接受参数 port, 可以用 golang flag 标准库 定时通过网络io吐出时间
-客户端接受参数 [city]:[host] 可以用 golang os.Args处理 一对多建立tcp连接，客户端维护一份大盘数据，预计会遇到并发写问题 客户端定时刷新 =&gt; 周期性打印大盘数据
-# 解答 代码注释即编码思路
-## 服务端 package main import ( &#34;flag&#34; &#34;io&#34; &#34;log&#34; &#34;net&#34; &#34;time&#34; ) var port string func init() { flag.StringVar(&amp;port, &#34;port&#34;, &#34;8000&#34;, &#34;input port of the server&#34;) } // TZ=US/Eastern go run clock2.
+            <p>记录一些使用git的常用命令和奇技淫巧</p>
+<ul>
+<li>代理配置</li>
+<li>git忽略文件夹</li>
+</ul>
         </div>
     
     
@@ -450,16 +455,23 @@ $ TZ=US/Eastern ./clock2 -port 8010 &amp; $ TZ=Asia/Tokyo ./clock2 -port 8020 &a
 <div class="post-info noselect">
     
         <div class="post-date dt-published">
-            <time datetime="2024-06-17">2024-06-17</time>
+            <time datetime="2024-06-14">2024-06-14</time>
             
         </div>
     
 
-    <a class="post-hidden-url u-url" href="/gopl/ch8.1-clockwall/">/gopl/ch8.1-clockwall/</a>
+    <a class="post-hidden-url u-url" href="/tricks/git/">/tricks/git/</a>
     <a href="https://shawnfinelee.github.io/" class="p-name p-author post-hidden-author h-card" rel="me"></a>
 
 
     <div class="post-taxonomies">
+        
+            <ul class="post-categories">
+                
+                    
+                    <li><a href="">git</a></li>
+                
+            </ul>
         
         
         
@@ -485,6 +497,8 @@ $ TZ=US/Eastern ./clock2 -port 8010 &amp; $ TZ=Asia/Tokyo ./clock2 -port 8020 &a
 
         <div style="display: flex; align-items: center; gap:8px">
             © Jin Shi Tai, 2024
+            
+            <a aria-label="Check statistics data" style="display: flex; align-items: center; border-bottom: none; cursor: pointer; color: var(--pagination-link-color)" href="https://cloud.umami.is/share/4pgWfJSJsLh7xyu0/8crane.co.in"><svg xmlns="http://www.w3.org/2000/svg"  width="16"  height="16"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round"  class="icon icon-tabler icons-tabler-outline icon-tabler-report-analytics"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M9 5h-2a2 2 0 0 0 -2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-12a2 2 0 0 0 -2 -2h-2" /><path d="M9 3m0 2a2 2 0 0 1 2 -2h2a2 2 0 0 1 2 2v0a2 2 0 0 1 -2 2h-2a2 2 0 0 1 -2 -2z" /><path d="M9 17v-5" /><path d="M12 17v-1" /><path d="M15 17v-3" /></svg></a>
             
         </div>
         <div style="display:flex;align-items: center">
