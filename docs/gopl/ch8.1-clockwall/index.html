@@ -1,0 +1,792 @@
+<!DOCTYPE html>
+
+
+<html lang="en-us" data-theme="">
+<head>
+    
+        
+<meta charset="utf-8">
+<meta name="HandheldFriendly" content="True">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="referrer" content="no-referrer-when-downgrade">
+
+<title>go语言圣经-练习题Ch8.1-Clockwall世界时钟大盘 - 金石台</title>
+
+<meta name="description" content="# 题目 修改clock2来支持传入参数作为端口号，然后写一个clockwall的程序，这个程序可以同时与多个clock服务器通信，从多个服务器中读取时间，并且在一个表格中一次显示所有服务器传回的结果，类似于你在某些办公室里看到的时钟墙。如果你有地理学上分布式的服务器可以用的话，让这些服务器跑在不同的机器上面；或者在同一台机器上跑多个不同的实例，这些实例监听不同的端口，假装自己在不同的时区。
+$ TZ=US/Eastern ./clock2 -port 8010 &amp; $ TZ=Asia/Tokyo ./clock2 -port 8020 &amp; $ TZ=Europe/London ./clock2 -port 8030 &amp; $ clockwall NewYork=localhost:8010 Tokyo=localhost:8020 London=localhost:8030 # 分析 CS结构的网络 服务端接受参数 port, 可以用 golang flag 标准库 定时通过网络io吐出时间
+客户端接受参数 [city]:[host] 可以用 golang os.Args处理 一对多建立tcp连接，客户端维护一份大盘数据，预计会遇到并发写问题 客户端定时刷新 =&gt; 周期性打印大盘数据
+# 解答 代码注释即编码思路
+## 服务端 package main import ( &#34;flag&#34; &#34;io&#34; &#34;log&#34; &#34;net&#34; &#34;time&#34; ) var port string func init() { flag.StringVar(&amp;port, &#34;port&#34;, &#34;8000&#34;, &#34;input port of the server&#34;) } // TZ=US/Eastern go run clock2.">
+
+
+
+
+
+<link rel="icon" type="image/x-icon" href="https://shawnfinelee.github.io/favicon.ico">
+<link rel="apple-touch-icon-precomposed" href="https://shawnfinelee.github.io/favicon.png">
+
+
+
+
+
+
+    
+
+
+
+    
+
+
+
+<style>
+  body {
+    visibility: hidden;
+    opacity: 0;
+  }
+</style>
+
+<noscript>
+  <style>
+    body {
+      visibility: visible;
+      opacity: 1;
+    }
+  </style>
+</noscript>
+
+
+
+
+    
+
+
+
+
+
+    
+    
+        
+    
+    
+
+    
+        <link rel="stylesheet" href="/css/style.min.ad48f461e95c57b768408f41adcf53f6742ecd609309114cad8862357add4fb2.css" integrity="sha256-rUj0YelcV7doQI9Brc9T9nQuzWCTCRFMrYhiNXrdT7I=">
+    
+
+
+
+
+
+    
+
+
+
+
+
+    
+    
+        
+    
+    
+
+    
+        <link rel="stylesheet" href="/css/style.min.c4c04b3ef88e3d619ad4c7ee5e03048422bc55c4fefdc1f07657c1133670aa22.css" integrity="sha256-xMBLPviOPWGa1MfuXgMEhCK8VcT&#43;/cHwdlfBEzZwqiI=">
+    
+
+
+
+
+
+    
+
+
+
+
+
+    
+    
+        
+    
+    
+
+    
+        <link rel="stylesheet" href="/css/style.min.21c5d8fe0a79d623b0adc1ce4bd4f6dd2c05cd939c9aaaa966ba7186b1464f4d.css" integrity="sha256-IcXY/gp51iOwrcHOS9T23SwFzZOcmqqpZrpxhrFGT00=">
+    
+
+
+
+
+
+
+
+
+
+
+
+
+    
+
+    
+
+
+
+
+
+    
+    
+        
+    
+    
+
+    
+        <script src="/js/script.min.08f04d96386c73c9bf4d160333f8f448c05a6e01c06770542ee0e013954ce930.js" type="text/javascript" charset="utf-8" integrity="sha256-CPBNljhsc8m/TRYDM/j0SMBabgHAZ3BULuDgE5VM6TA="></script>
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    
+</head>
+<body>
+    <a class="skip-main" href="#main">Skip to main content</a>
+    <div class="container">
+        <header class="common-header">
+            
+                <div class="header-top">
+    
+        <div class="header-top-left">
+            <h1 class="site-title noselect">
+    <a href="/">金石台</a>
+</h1>
+
+        </div>
+        <div class="header-top-right">
+            <ul class="social-icons noselect">
+
+
+    
+        
+        
+        <li>
+            <a href="https://github.com/shawnfinelee" title="Github" rel="me">
+            <span class="inline-svg">
+
+    
+
+
+    
+    
+    
+    
+    
+
+    <svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round"  class="icon icon-tabler icons-tabler-outline icon-tabler-brand-github"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M9 19c-4.3 1.4 -4.3 -2.5 -6 -3m12 5v-3.5c0 -1 .1 -1.4 -.5 -2c2.8 -.3 5.5 -1.4 5.5 -6a4.6 4.6 0 0 0 -1.3 -3.2a4.2 4.2 0 0 0 -.1 -3.2s-1.1 -.3 -3.5 1.3a12.3 12.3 0 0 0 -6.2 0c-2.4 -1.6 -3.5 -1.3 -3.5 -1.3a4.2 4.2 0 0 0 -.1 3.2a4.6 4.6 0 0 0 -1.3 3.2c0 4.6 2.7 5.7 5.5 6c-.6 .6 -.6 1.2 -.5 2v3.5" /></svg>
+
+
+</span>
+
+            </a>
+        </li>
+    
+
+    
+        
+        
+        <li>
+            <a href="mailto:shawnfinelee@163.com" title="Email" rel="me">
+            <span class="inline-svg">
+
+    
+
+
+    
+    
+    
+    
+    
+
+    <svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round"  class="icon icon-tabler icons-tabler-outline icon-tabler-mail"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M3 7a2 2 0 0 1 2 -2h14a2 2 0 0 1 2 2v10a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2v-10z" /><path d="M3 7l9 6l9 -6" /></svg>
+
+
+</span>
+
+            </a>
+        </li>
+    
+
+    
+        
+        
+        <li>
+            <a href="https://leetcode.com/shawnflee" title="Leetcode" rel="me">
+            <span class="inline-svg">
+
+    
+
+
+    
+    
+    
+    
+    
+
+    <svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round"  class="icon icon-tabler icons-tabler-outline icon-tabler-brand-leetcode"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M12 13h7.5" /><path d="M9.424 7.268l4.999 -4.999" /><path d="M16.633 16.644l-2.402 2.415a3.189 3.189 0 0 1 -4.524 0l-3.77 -3.787a3.223 3.223 0 0 1 0 -4.544l3.77 -3.787a3.189 3.189 0 0 1 4.524 0l2.302 2.313" /></svg>
+
+
+</span>
+
+            </a>
+        </li>
+    
+
+
+
+
+
+
+    <li>
+            <a href="/index.xml" title="RSS" rel="me">
+            <span class="inline-svg">
+
+    
+
+
+    
+    
+    
+    
+    
+
+    <svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round"  class="icon icon-tabler icons-tabler-outline icon-tabler-rss"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M5 19m-1 0a1 1 0 1 0 2 0a1 1 0 1 0 -2 0" /><path d="M4 4a16 16 0 0 1 16 16" /><path d="M4 11a9 9 0 0 1 9 9" /></svg>
+
+
+</span>
+
+            </a>
+        </li>
+    
+
+</ul>
+
+            
+
+
+
+    
+
+
+
+    
+
+
+
+    
+        <div class="theme-switcher">
+            <span class="inline-svg">
+
+    
+
+
+    
+    
+    
+    
+    
+
+    <svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round"  class="icon icon-tabler icons-tabler-outline icon-tabler-sun-high"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M14.828 14.828a4 4 0 1 0 -5.656 -5.656a4 4 0 0 0 5.656 5.656z" /><path d="M6.343 17.657l-1.414 1.414" /><path d="M6.343 6.343l-1.414 -1.414" /><path d="M17.657 6.343l1.414 -1.414" /><path d="M17.657 17.657l1.414 1.414" /><path d="M4 12h-2" /><path d="M12 4v-2" /><path d="M20 12h2" /><path d="M12 20v2" /></svg>
+
+
+</span>
+
+        </div>
+    
+
+    <script>
+        const STORAGE_KEY = 'user-color-scheme'
+        const defaultTheme = "auto"
+
+        let currentTheme
+        let switchButton
+        let autoDefinedScheme = window.matchMedia('(prefers-color-scheme: dark)')
+
+        function switchTheme(e) {
+            currentTheme = (currentTheme === 'dark') ? 'light' : 'dark';
+            if (localStorage) localStorage.setItem(STORAGE_KEY, currentTheme);
+            document.documentElement.setAttribute('data-theme', currentTheme);
+            changeGiscusTheme(currentTheme);
+            document.body.dispatchEvent(new CustomEvent(currentTheme + "-theme-set"));
+        }
+
+        const autoChangeScheme = e => {
+            currentTheme = e.matches ? 'dark' : 'light'
+            document.documentElement.setAttribute('data-theme', currentTheme);
+            changeGiscusTheme(currentTheme);
+            document.body.dispatchEvent(new CustomEvent(currentTheme + "-theme-set"));
+        }
+
+        document.addEventListener('DOMContentLoaded', function () {
+            switchButton = document.querySelector('.theme-switcher')
+            currentTheme = detectCurrentScheme()
+
+            if (currentTheme === 'auto') {
+                autoChangeScheme(autoDefinedScheme);
+                autoDefinedScheme.addListener(autoChangeScheme);
+            } else {
+                document.documentElement.setAttribute('data-theme', currentTheme)
+            }
+
+            if (switchButton) {
+                switchButton.addEventListener('click', switchTheme, false)
+            }
+
+            showContent();
+        })
+
+        function detectCurrentScheme() {
+            if (localStorage !== null && localStorage.getItem(STORAGE_KEY)) {
+                return localStorage.getItem(STORAGE_KEY)
+            }
+            if (defaultTheme) {
+                return defaultTheme
+            }
+            return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+        }
+
+        function showContent() {
+            document.body.style.visibility = 'visible';
+            document.body.style.opacity = 1;
+        }
+
+        function changeGiscusTheme (theme) {
+            function sendMessage(message) {
+              const iframe = document.querySelector('iframe.giscus-frame');
+              if (!iframe) return;
+              iframe.contentWindow.postMessage({ giscus: message }, 'https://giscus.app');
+            }
+
+            sendMessage({
+              setConfig: {
+                theme: theme
+              }
+            });
+        }
+    </script>
+
+
+        </div>
+    
+    
+</div>
+
+
+    <nav class="noselect">
+        
+        
+        <a class="" href="https://shawnfinelee.github.io/" title="">Home</a>
+        
+        <a class="" href="https://shawnfinelee.github.io/gopl/" title="">go语言圣经Practice</a>
+        
+        <a class="" href="https://shawnfinelee.github.io/tricks/" title="">杂技</a>
+        
+        <a class="" href="https://shawnfinelee.github.io/about/" title="">About</a>
+        
+    </nav>
+
+
+
+
+
+
+
+
+            
+        </header>
+        <main id="main" tabindex="-1">
+            
+    
+
+    <article class="post h-entry">
+        <div class="post-header">
+            <header>
+                <h1 class="p-name post-title">go语言圣经-练习题Ch8.1-Clockwall世界时钟大盘</h1>
+                
+
+            </header>
+            
+
+
+
+<div class="post-info noselect">
+    
+        <div class="post-date dt-published">
+            <time datetime="2024-06-17">2024-06-17</time>
+            
+        </div>
+    
+
+    <a class="post-hidden-url u-url" href="/gopl/ch8.1-clockwall/">/gopl/ch8.1-clockwall/</a>
+    <a href="https://shawnfinelee.github.io/" class="p-name p-author post-hidden-author h-card" rel="me"></a>
+
+
+    <div class="post-taxonomies">
+        
+        
+        
+    </div>
+</div>
+
+        </div>
+        
+
+  
+  
+
+
+
+
+  
+  
+  
+  <details class="toc noselect">
+    <summary>Table of Contents</summary>
+    <div class="inner"><nav id="TableOfContents">
+  <ul>
+    <li><a href="#题目">题目</a></li>
+    <li><a href="#分析">分析</a></li>
+    <li><a href="#解答">解答</a>
+      <ul>
+        <li><a href="#服务端">服务端</a></li>
+        <li><a href="#客户端">客户端</a></li>
+      </ul>
+    </li>
+    <li><a href="#其他">其他</a></li>
+  </ul>
+</nav></div>
+  </details>
+  
+
+
+
+<script>
+  var toc = document.querySelector(".toc");
+  if (toc) {
+    toc.addEventListener("click", function () {
+      if (event.target.tagName !== "A") {
+        event.preventDefault();
+        if (this.open) {
+          this.open = false;
+          this.classList.remove("expanded");
+        } else {
+          this.open = true;
+          this.classList.add("expanded");
+        }
+      }
+    });
+  }
+</script>
+
+        <div class="content e-content">
+            <h2 id="题目" >
+<div>
+    <a href="#%e9%a2%98%e7%9b%ae">
+        #
+    </a>
+    题目
+</div>
+</h2>
+<p>修改<a href="https://books.studygolang.com/gopl-zh/ch8/ch8-02.html">clock2</a>来支持传入参数作为端口号，然后写一个clockwall的程序，这个程序可以同时与多个clock服务器通信，从多个服务器中读取时间，并且在一个表格中一次显示所有服务器传回的结果，类似于你在某些办公室里看到的时钟墙。如果你有地理学上分布式的服务器可以用的话，让这些服务器跑在不同的机器上面；或者在同一台机器上跑多个不同的实例，这些实例监听不同的端口，假装自己在不同的时区。</p>
+<div class="highlight"><pre tabindex="0" style="color:#e2e4e5;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>$ <span style="color:#ff5c57">TZ</span><span style="color:#ff6ac1">=</span>US/Eastern    ./clock2 -port <span style="color:#ff9f43">8010</span> &amp;
+</span></span><span style="display:flex;"><span>$ <span style="color:#ff5c57">TZ</span><span style="color:#ff6ac1">=</span>Asia/Tokyo    ./clock2 -port <span style="color:#ff9f43">8020</span> &amp;
+</span></span><span style="display:flex;"><span>$ <span style="color:#ff5c57">TZ</span><span style="color:#ff6ac1">=</span>Europe/London ./clock2 -port <span style="color:#ff9f43">8030</span> &amp;
+</span></span><span style="display:flex;"><span>$ clockwall <span style="color:#ff5c57">NewYork</span><span style="color:#ff6ac1">=</span>localhost:8010 <span style="color:#ff5c57">Tokyo</span><span style="color:#ff6ac1">=</span>localhost:8020 <span style="color:#ff5c57">London</span><span style="color:#ff6ac1">=</span>localhost:8030
+</span></span></code></pre></div><h2 id="分析" >
+<div>
+    <a href="#%e5%88%86%e6%9e%90">
+        #
+    </a>
+    分析
+</div>
+</h2>
+<p>CS结构的网络
+服务端接受参数 port, 可以用 golang flag 标准库
+定时通过网络io吐出时间</p>
+<p>客户端接受参数 [city]:[host] 可以用 golang os.Args处理
+一对多建立tcp连接，客户端维护一份大盘数据，预计会遇到并发写问题
+客户端定时刷新 =&gt; 周期性打印大盘数据</p>
+<h2 id="解答" >
+<div>
+    <a href="#%e8%a7%a3%e7%ad%94">
+        #
+    </a>
+    解答
+</div>
+</h2>
+<p>代码注释即编码思路</p>
+<h3 id="服务端" >
+<div>
+    <a href="#%e6%9c%8d%e5%8a%a1%e7%ab%af">
+        ##
+    </a>
+    服务端
+</div>
+</h3>
+<div class="highlight"><pre tabindex="0" style="color:#e2e4e5;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-golang" data-lang="golang"><span style="display:flex;"><span><span style="color:#ff6ac1">package</span> main
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#ff6ac1">import</span> (
+</span></span><span style="display:flex;"><span>	<span style="color:#5af78e">&#34;flag&#34;</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#5af78e">&#34;io&#34;</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#5af78e">&#34;log&#34;</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#5af78e">&#34;net&#34;</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#5af78e">&#34;time&#34;</span>
+</span></span><span style="display:flex;"><span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#ff5c57">var</span> port <span style="color:#9aedfe">string</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#ff5c57">func</span> <span style="color:#57c7ff">init</span>() {
+</span></span><span style="display:flex;"><span>	flag.<span style="color:#57c7ff">StringVar</span>(<span style="color:#ff6ac1">&amp;</span>port, <span style="color:#5af78e">&#34;port&#34;</span>, <span style="color:#5af78e">&#34;8000&#34;</span>, <span style="color:#5af78e">&#34;input port of the server&#34;</span>)
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#78787e">// TZ=US/Eastern go run clock2.go -port 8010 &amp;
+</span></span></span><span style="display:flex;"><span><span style="color:#78787e">// TZ=Europe/London go run clock2.go -port 8030 &amp;
+</span></span></span><span style="display:flex;"><span><span style="color:#78787e">// TZ=Asia/Tokyo go run clock2.go -port 8020 &amp;
+</span></span></span><span style="display:flex;"><span><span style="color:#78787e"></span><span style="color:#ff5c57">func</span> <span style="color:#57c7ff">main</span>() {
+</span></span><span style="display:flex;"><span>	flag.<span style="color:#57c7ff">Parse</span>()
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	listener, err <span style="color:#ff6ac1">:=</span> net.<span style="color:#57c7ff">Listen</span>(<span style="color:#5af78e">&#34;tcp&#34;</span>, <span style="color:#5af78e">&#34;localhost:&#34;</span><span style="color:#ff6ac1">+</span>port)
+</span></span><span style="display:flex;"><span>	<span style="color:#ff6ac1">if</span> err <span style="color:#ff6ac1">!=</span> <span style="color:#ff6ac1">nil</span> {
+</span></span><span style="display:flex;"><span>		log.<span style="color:#57c7ff">Fatal</span>(err)
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>	log.<span style="color:#57c7ff">Printf</span>(<span style="color:#5af78e">&#34;started a server, port: %s\n&#34;</span>, port)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#ff6ac1">for</span> {
+</span></span><span style="display:flex;"><span>		conn, err <span style="color:#ff6ac1">:=</span> listener.<span style="color:#57c7ff">Accept</span>()
+</span></span><span style="display:flex;"><span>		<span style="color:#ff6ac1">if</span> err <span style="color:#ff6ac1">!=</span> <span style="color:#ff6ac1">nil</span> {
+</span></span><span style="display:flex;"><span>			log.<span style="color:#57c7ff">Print</span>(err)
+</span></span><span style="display:flex;"><span>		}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>		<span style="color:#78787e">// 作为服务端可以接受多个客户端同时连接，不阻塞
+</span></span></span><span style="display:flex;"><span><span style="color:#78787e"></span>		<span style="color:#ff6ac1">go</span> <span style="color:#57c7ff">handleConn</span>(conn)
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#ff5c57">func</span> <span style="color:#57c7ff">handleConn</span>(conn net.Conn) {
+</span></span><span style="display:flex;"><span>	<span style="color:#78787e">// 处理结束则本 goroutine 关闭
+</span></span></span><span style="display:flex;"><span><span style="color:#78787e"></span>	<span style="color:#ff6ac1">defer</span> conn.<span style="color:#57c7ff">Close</span>()
+</span></span><span style="display:flex;"><span>	<span style="color:#ff6ac1">for</span> {
+</span></span><span style="display:flex;"><span>		<span style="color:#78787e">// 一种奇葩的时间格式化方式（1234567法），倒是够直观
+</span></span></span><span style="display:flex;"><span><span style="color:#78787e"></span>		_, err <span style="color:#ff6ac1">:=</span> io.<span style="color:#57c7ff">WriteString</span>(conn, time.<span style="color:#57c7ff">Now</span>().<span style="color:#57c7ff">Format</span>(<span style="color:#5af78e">&#34;15:04:05\n&#34;</span>))
+</span></span><span style="display:flex;"><span>		<span style="color:#ff6ac1">if</span> err <span style="color:#ff6ac1">!=</span> <span style="color:#ff6ac1">nil</span> {
+</span></span><span style="display:flex;"><span>			log.<span style="color:#57c7ff">Print</span>(err)
+</span></span><span style="display:flex;"><span>			<span style="color:#ff6ac1">return</span>
+</span></span><span style="display:flex;"><span>		}
+</span></span><span style="display:flex;"><span>		time.<span style="color:#57c7ff">Sleep</span>(<span style="color:#ff9f43">1</span> <span style="color:#ff6ac1">*</span> time.Second)
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h3 id="客户端" >
+<div>
+    <a href="#%e5%ae%a2%e6%88%b7%e7%ab%af">
+        ##
+    </a>
+    客户端
+</div>
+</h3>
+<div class="highlight"><pre tabindex="0" style="color:#e2e4e5;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-golang" data-lang="golang"><span style="display:flex;"><span><span style="color:#ff6ac1">package</span> main
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#ff6ac1">import</span> (
+</span></span><span style="display:flex;"><span>	<span style="color:#5af78e">&#34;bufio&#34;</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#5af78e">&#34;fmt&#34;</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#5af78e">&#34;log&#34;</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#5af78e">&#34;net&#34;</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#5af78e">&#34;os&#34;</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#5af78e">&#34;strings&#34;</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#5af78e">&#34;sync&#34;</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#5af78e">&#34;time&#34;</span>
+</span></span><span style="display:flex;"><span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#78787e">// 可执行文件启动参数 clockwall NewYork=localhost:8010 Tokyo=localhost:8020 London=localhost:8030
+</span></span></span><span style="display:flex;"><span><span style="color:#78787e">// 解释执行启动参数 go run clockwall.go NewYork=localhost:8010 Tokyo=localhost:8020 London=localhost:8030
+</span></span></span><span style="display:flex;"><span><span style="color:#78787e"></span><span style="color:#ff5c57">func</span> <span style="color:#57c7ff">main</span>() {
+</span></span><span style="display:flex;"><span>	cityKeys <span style="color:#ff6ac1">:=</span> <span style="color:#ff5c57">make</span>([]<span style="color:#9aedfe">string</span>, <span style="color:#ff9f43">0</span>)
+</span></span><span style="display:flex;"><span>	m <span style="color:#ff6ac1">:=</span> <span style="color:#ff5c57">make</span>(<span style="color:#ff5c57">map</span>[<span style="color:#9aedfe">string</span>]<span style="color:#9aedfe">string</span>) <span style="color:#78787e">//[city]host
+</span></span></span><span style="display:flex;"><span><span style="color:#78787e"></span>	<span style="color:#ff5c57">var</span> wall sync.Map            <span style="color:#78787e">//[city]time 大盘数据
+</span></span></span><span style="display:flex;"><span><span style="color:#78787e"></span>
+</span></span><span style="display:flex;"><span>	<span style="color:#78787e">// 解释执行程序后面的参数 NewYork=localhost:8010 Tokyo=localhost:8020 London=localhost:8030
+</span></span></span><span style="display:flex;"><span><span style="color:#78787e"></span>	<span style="color:#ff6ac1">for</span> _, item <span style="color:#ff6ac1">:=</span> <span style="color:#ff6ac1">range</span> os.Args[<span style="color:#ff9f43">1</span>:] {
+</span></span><span style="display:flex;"><span>		cityHost <span style="color:#ff6ac1">:=</span> strings.<span style="color:#57c7ff">Split</span>(item, <span style="color:#5af78e">&#34;=&#34;</span>)
+</span></span><span style="display:flex;"><span>		m[cityHost[<span style="color:#ff9f43">0</span>]] = cityHost[<span style="color:#ff9f43">1</span>]
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>		cityKeys = <span style="color:#ff5c57">append</span>(cityKeys, cityHost[<span style="color:#ff9f43">0</span>])
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#78787e">// golang的 map range是随机的，不保证元素出现概率一致
+</span></span></span><span style="display:flex;"><span><span style="color:#78787e"></span>	<span style="color:#78787e">// goang的range map 是不可预期命中key值的，所以这里多使用一个存储城市列表的数组，配合实现map的有序遍历
+</span></span></span><span style="display:flex;"><span><span style="color:#78787e"></span>	<span style="color:#78787e">// 参考文章 https://blog.twofei.com/847/
+</span></span></span><span style="display:flex;"><span><span style="color:#78787e"></span>	<span style="color:#ff6ac1">for</span> i <span style="color:#ff6ac1">:=</span> <span style="color:#ff9f43">0</span>; i &lt; <span style="color:#ff5c57">len</span>(cityKeys); i<span style="color:#ff6ac1">++</span> {
+</span></span><span style="display:flex;"><span>		<span style="color:#ff6ac1">go</span> <span style="color:#ff5c57">func</span>(city <span style="color:#9aedfe">string</span>, addr <span style="color:#9aedfe">string</span>) {
+</span></span><span style="display:flex;"><span>			conn, err <span style="color:#ff6ac1">:=</span> net.<span style="color:#57c7ff">Dial</span>(<span style="color:#5af78e">&#34;tcp&#34;</span>, addr)
+</span></span><span style="display:flex;"><span>			<span style="color:#ff6ac1">if</span> err <span style="color:#ff6ac1">!=</span> <span style="color:#ff6ac1">nil</span> {
+</span></span><span style="display:flex;"><span>				log.<span style="color:#57c7ff">Fatal</span>(err)
+</span></span><span style="display:flex;"><span>			}
+</span></span><span style="display:flex;"><span>			<span style="color:#ff6ac1">defer</span> conn.<span style="color:#57c7ff">Close</span>()
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>			scaner <span style="color:#ff6ac1">:=</span> bufio.<span style="color:#57c7ff">NewScanner</span>(conn)
+</span></span><span style="display:flex;"><span>			<span style="color:#ff6ac1">for</span> scaner.<span style="color:#57c7ff">Scan</span>() {
+</span></span><span style="display:flex;"><span>				<span style="color:#78787e">// 普通map非线程安全
+</span></span></span><span style="display:flex;"><span><span style="color:#78787e"></span>				<span style="color:#78787e">// 会产生 并发写问题 concurrent map writes
+</span></span></span><span style="display:flex;"><span><span style="color:#78787e"></span>				wall.<span style="color:#57c7ff">Store</span>(city, scaner.<span style="color:#57c7ff">Text</span>())
+</span></span><span style="display:flex;"><span>			}
+</span></span><span style="display:flex;"><span>		}(cityKeys[i], m[cityKeys[i]])
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#ff6ac1">for</span> {
+</span></span><span style="display:flex;"><span>		<span style="color:#78787e">// 大盘按照固定间隔刷新
+</span></span></span><span style="display:flex;"><span><span style="color:#78787e"></span>		time.<span style="color:#57c7ff">Sleep</span>(<span style="color:#ff9f43">2</span> <span style="color:#ff6ac1">*</span> time.Second)
+</span></span><span style="display:flex;"><span>		<span style="color:#ff5c57">var</span> result <span style="color:#9aedfe">string</span>
+</span></span><span style="display:flex;"><span>		<span style="color:#78787e">// 这里range m 或者 wall.Range() 都是随机出，不符合世界时间大盘的要求
+</span></span></span><span style="display:flex;"><span><span style="color:#78787e"></span>		<span style="color:#ff6ac1">for</span> i <span style="color:#ff6ac1">:=</span> <span style="color:#ff9f43">0</span>; i &lt; <span style="color:#ff5c57">len</span>(cityKeys); i<span style="color:#ff6ac1">++</span> {
+</span></span><span style="display:flex;"><span>			v, _ <span style="color:#ff6ac1">:=</span> wall.<span style="color:#57c7ff">Load</span>(cityKeys[i])
+</span></span><span style="display:flex;"><span>			result <span style="color:#ff6ac1">+=</span> fmt.<span style="color:#57c7ff">Sprintf</span>(<span style="color:#5af78e">&#34;%s:%s&#34;</span>, cityKeys[i], v) <span style="color:#ff6ac1">+</span> <span style="color:#5af78e">&#34; &#34;</span>
+</span></span><span style="display:flex;"><span>		}
+</span></span><span style="display:flex;"><span>		fmt.<span style="color:#57c7ff">Println</span>(result)
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h2 id="其他" >
+<div>
+    <a href="#%e5%85%b6%e4%bb%96">
+        #
+    </a>
+    其他
+</div>
+</h2>
+<p>小小的练习题有大大的宇宙</p>
+
+        </div>
+
+    </article>
+
+    
+    
+
+    
+        
+        
+    
+
+    
+
+    
+        
+
+
+
+
+
+
+
+
+            
+
+<script>
+        function detectCurrentScheme2() {
+                const defaultTheme = "auto";
+                if (localStorage !== null && localStorage.getItem("user-color-scheme")) {
+                        return localStorage.getItem("user-color-scheme");
+                }
+                if (defaultTheme === "dark" || defaultTheme === "light") {
+                        return defaultTheme;
+                }
+                return window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+        }
+
+        let giscusTheme = detectCurrentScheme2();
+        let giscusAttributes = {
+                src: "https://giscus.app/client.js",
+                "data-repo": "shawnfinelee\/shawnfinelee.github.io",
+                "data-repo-id": "R_kgDOMJJIQg",
+                "data-category": "Announcements",
+                "data-category-id": "DIC_kwDOMJJIQs4CgHdl",
+                "data-mapping": "pathname",
+                "data-strict": "0",
+                "data-reactions-enabled": "1",
+                "data-emit-metadata": "0",
+                "data-input-position": "bottom",
+                "data-theme": giscusTheme,
+                "data-lang": "zh-CN",
+                crossorigin: "anonymous",
+                lazyload: "true",
+                async: true,
+        };
+        let main = document.querySelector("main");
+        let giscusScript = document.createElement("script");
+        Object.entries(giscusAttributes).forEach(([key, value]) => giscusScript.setAttribute(key, value));
+        main.appendChild(giscusScript);
+</script>
+
+
+
+
+    
+
+    
+
+    
+
+        </main>
+        
+            <footer class="common-footer noselect">
+    
+    
+
+    <div class="common-footer-bottom">
+        
+
+        <div style="display: flex; align-items: center; gap:8px">
+            © Jin Shi Tai, 2024
+            
+        </div>
+        <div style="display:flex;align-items: center">
+            
+            
+            
+            
+            
+            
+        </div>
+        <div>
+            Powered by <a target="_blank" rel="noopener noreferrer" href="https://gohugo.io/">Hugo</a>, theme <a target="_blank" rel="noopener noreferrer" href="https://github.com/Junyi-99/hugo-theme-anubis2">Anubis2</a>.<br>
+            
+
+        </div>
+    </div>
+
+    <p class="h-card vcard">
+
+    <a href=https://shawnfinelee.github.io/ class="p-name u-url url fn" rel="me"></a>
+
+    
+
+    
+</p>
+
+</footer>
+
+        
+    </div>
+</body>
+</html>

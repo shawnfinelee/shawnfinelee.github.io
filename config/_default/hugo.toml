@@ -27,14 +27,19 @@ weight = 1
 # weight = 2
 
 [[menu.main]]
+name = "go语言圣经Practice"
+url = "/gopl/"
+weight = 10
+
+[[menu.main]]
 name = "杂技"
 url = "/tricks/"
-weight = 3
+weight = 90
 
 [[menu.main]]
 name = "About"
 url = "/about/"
-weight = 4
+weight = 100
 
 # [languages]
 # [languages.zh]

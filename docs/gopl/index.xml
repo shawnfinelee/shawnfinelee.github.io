@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>金石台</title>
-    <link>/</link>
-    <description>金石台</description>
+    <title>Gopls on 金石台</title>
+    <link>/gopl/</link>
+    <description>金石台 (Gopls)</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <managingEditor>shawnfinelee@163.com (Jin Shi Tai)</managingEditor>
     <webMaster>shawnfinelee@163.com (Jin Shi Tai)</webMaster>
     <lastBuildDate>Mon, 17 Jun 2024 12:22:04 +0800</lastBuildDate>
     
-    <atom:link href="/index.xml" rel="self" type="application/rss+xml" />
+    <atom:link href="/gopl/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
@@ -193,130 +193,6 @@
 &lt;/div&gt;
 &lt;/h2&gt;
 &lt;p&gt;小小的练习题有大大的宇宙&lt;/p&gt;
-</description>
-    </item>
-    
-    <item>
-      <title>Git</title>
-      <link>/tricks/git/</link>
-      <pubDate>Fri, 14 Jun 2024 11:41:50 +0800</pubDate>
-      <author>shawnfinelee@163.com (Jin Shi Tai)</author>
-      <guid>/tricks/git/</guid>
-      <description>&lt;p&gt;记录一些使用git的常用命令和奇技淫巧&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;代理配置&lt;/li&gt;
-&lt;li&gt;git忽略文件夹&lt;/li&gt;
-&lt;/ul&gt;
-&lt;h2 id=&#34;git-config-proxy-代理配置&#34; &gt;
-&lt;div&gt;
-    &lt;a href=&#34;#git-config-proxy-%e4%bb%a3%e7%90%86%e9%85%8d%e7%bd%ae&#34;&gt;
-        #
-    &lt;/a&gt;
-    git config proxy 代理配置
-&lt;/div&gt;
-&lt;/h2&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#e2e4e5;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#78787e&#34;&gt;# HTTP 代理&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;git config --global http.proxy &lt;span style=&#34;color:#5af78e&#34;&gt;&amp;#34;http://127.0.0.1:7890&amp;#34;&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;git config --global https.proxy &lt;span style=&#34;color:#5af78e&#34;&gt;&amp;#34;http://127.0.0.1:7890&amp;#34;&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#78787e&#34;&gt;# socks5 代理&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;git config --global http.proxy &lt;span style=&#34;color:#5af78e&#34;&gt;&amp;#34;socks5://127.0.0.1:1081&amp;#34;&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;git config --global https.proxy &lt;span style=&#34;color:#5af78e&#34;&gt;&amp;#34;socks5://127.0.0.1:1081&amp;#34;&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#78787e&#34;&gt;# 检查设置&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;git config --global --list | grep proxy
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#78787e&#34;&gt;# 取消设置&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;git config --global --unset http.proxy
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;git config --global --unset https.proxy
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#78787e&#34;&gt;# 只设置github走代理&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;git config --global http.https://github.com.proxy &lt;span style=&#34;color:#5af78e&#34;&gt;&amp;#34;http://127.0.0.1:7890&amp;#34;&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;git config --global https.https://github.com.proxy &lt;span style=&#34;color:#5af78e&#34;&gt;&amp;#34;http://127.0.0.1:7890&amp;#34;&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id=&#34;git忽略文件夹&#34; &gt;
-&lt;div&gt;
-    &lt;a href=&#34;#git%e5%bf%bd%e7%95%a5%e6%96%87%e4%bb%b6%e5%a4%b9&#34;&gt;
-        #
-    &lt;/a&gt;
-    git忽略文件夹
-&lt;/div&gt;
-&lt;/h2&gt;
-&lt;blockquote&gt;
-&lt;p&gt;一键生成 .gitignore 的工具 &lt;a href=&#34;https://www.toptal.com/developers/gitignore&#34;&gt;https://www.toptal.com/developers/gitignore&lt;/a&gt;&lt;/p&gt;
-&lt;/blockquote&gt;
-&lt;p&gt;如果一个文件夹(/themes)已经被添加到仓库里，该如何忽略呢？&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#e2e4e5;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#78787e&#34;&gt;# 从暂存区移除文件夹&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;git rm --cached -r themes
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#78787e&#34;&gt;# 将修改添加到工作树&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;git add .
-&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;如图能看到，从git暂存区删除的操作，只是结果上删除，这一步骤是作为一次变更被记录在gitlog里的，也就是说如果回溯也是能找到历史的文件的。
-&lt;img src=&#34;https://raw.githubusercontent.com/shawnfinelee/PubPics/main/uPic/Rjkp99.jpg&#34; alt=&#34;9493bf84635d8dd5ce1425557e6b122c.png&#34;&gt;&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#e2e4e5;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#78787e&#34;&gt;# 强制推送到远程&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;git commit -m &lt;span style=&#34;color:#5af78e&#34;&gt;&amp;#34;remove cached dir&amp;#34;&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;git push --force origin main
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#78787e&#34;&gt;# Done&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id=&#34;真的删除了吗&#34; &gt;
-&lt;div&gt;
-    &lt;a href=&#34;#%e7%9c%9f%e7%9a%84%e5%88%a0%e9%99%a4%e4%ba%86%e5%90%97&#34;&gt;
-        ##
-    &lt;/a&gt;
-    真的删除了吗？
-&lt;/div&gt;
-&lt;/h3&gt;
-&lt;p&gt;远程的仓库里已经看不到我们不需要的文件了，一般情况下这就够了，除了两种特殊情况，&lt;/p&gt;
-&lt;ol&gt;
-&lt;li&gt;这些文件是敏感文件，需要从远程彻底删除&lt;/li&gt;
-&lt;li&gt;这些文件很多，会严重影响push/pull项目的速度
-如果我去翻commit log，依然可以看到它们。所以还需要彻底删除它&lt;/li&gt;
-&lt;/ol&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#e2e4e5;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#78787e&#34;&gt;# 扫描并重写相关的commit，重写分支的ref&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;git filter-branch --force --index-filter &lt;span style=&#34;color:#5af78e&#34;&gt;&amp;#39;git rm --cached --ignore-unmatch themes/ -r&amp;#39;&lt;/span&gt; --prune-empty --tag-name-filter cat -- --all
-&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;&lt;img src=&#34;https://raw.githubusercontent.com/shawnfinelee/PubPics/main/uPic/UCd6f1.jpg&#34; alt=&#34;f67035f391468c14201d8ae80978f110.png&#34;&gt;&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#e2e4e5;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#78787e&#34;&gt;# 干跑，只看效果不会真的操作，相当于自动回滚事务&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;git push --force --all --dry-run --verbose
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#78787e&#34;&gt;# 确认无误后push&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;git push --force --all --verbose
-&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;&lt;img src=&#34;https://raw.githubusercontent.com/shawnfinelee/PubPics/main/uPic/g7UnwV.jpg&#34; alt=&#34;d300888da7da55c6cc68dd1fdb56a3da.png&#34;&gt;&lt;/p&gt;
-&lt;p&gt;过一段时间后确认没有影响，&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#e2e4e5;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;git &lt;span style=&#34;color:#ff6ac1&#34;&gt;for&lt;/span&gt;-each-ref --format&lt;span style=&#34;color:#ff6ac1&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#5af78e&#34;&gt;&amp;#34;delete %(refname)&amp;#34;&lt;/span&gt; refs/original | git update-ref --stdin
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;git reflog expire --expire&lt;span style=&#34;color:#ff6ac1&#34;&gt;=&lt;/span&gt;now --all
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;git gc --prune&lt;span style=&#34;color:#ff6ac1&#34;&gt;=&lt;/span&gt;now
-&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id=&#34;还有风险吗&#34; &gt;
-&lt;div&gt;
-    &lt;a href=&#34;#%e8%bf%98%e6%9c%89%e9%a3%8e%e9%99%a9%e5%90%97&#34;&gt;
-        ##
-    &lt;/a&gt;
-    还有风险吗？
-&lt;/div&gt;
-&lt;/h3&gt;
-&lt;p&gt;如果别人知道你最初的commit ID，还能看到你的文件。&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://raw.githubusercontent.com/shawnfinelee/PubPics/main/uPic/2xKcbR.jpg&#34; alt=&#34;20cad591c0d358babb5c495baad4460e.png&#34;&gt;&lt;/p&gt;
-&lt;p&gt;确定是敏感文件的话，可以找客服解决。
-&lt;a href=&#34;https://docs.github.com/zh/authentication/keeping-your-account-and-data-secure/removing-sensitive-data-from-a-repository#fully-removing-the-data-from-github&#34;&gt;https://docs.github.com/zh/authentication/keeping-your-account-and-data-secure/removing-sensitive-data-from-a-repository#fully-removing-the-data-from-github&lt;/a&gt;&lt;/p&gt;</description>
-    </item>
-    
-    <item>
-      <title>关于</title>
-      <link>/about/</link>
-      <pubDate>Thu, 13 Jun 2024 06:00:00 +0800</pubDate>
-      <author>shawnfinelee@163.com (Jin Shi Tai)</author>
-      <guid>/about/</guid>
-      <description>&lt;h2 id=&#34;关于博客&#34; &gt;
-&lt;div&gt;
-    &lt;a href=&#34;#%e5%85%b3%e4%ba%8e%e5%8d%9a%e5%ae%a2&#34;&gt;
-        #
-    &lt;/a&gt;
-    关于博客
-&lt;/div&gt;
-&lt;/h2&gt;
-&lt;p&gt;我希望通过共享知识能够和更多的人交流，大多数时候，这个站点主要是以分享一些见闻，知识，技术，心得，趣闻，等等，反正是个大杂烩，对于文章的内容，质量，风格基本上没有什么要求，主要是在一种轻松的氛围下享受编程和技术其中的点点滴滴就可以了。（来自酷壳）&lt;/p&gt;
-&lt;h2 id=&#34;联系方式&#34; &gt;
-&lt;div&gt;
-    &lt;a href=&#34;#%e8%81%94%e7%b3%bb%e6%96%b9%e5%bc%8f&#34;&gt;
-        #
-    &lt;/a&gt;
-    联系方式
-&lt;/div&gt;
-&lt;/h2&gt;
-&lt;p&gt;邮箱：shawnfinelee@163.com&lt;/p&gt;
 </description>
     </item>
     
